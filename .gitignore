@@ -1,0 +1,6 @@
+**/.ionide/*
+**/.vs/*
+*.user
+bin/*
+obj/*
+wwwroot/Scripts/*
