@@ -17,6 +17,7 @@ type MyControl() =
 
 module Site =
     open type WebSharper.UI.ClientServer
+    open WebSharper.JavaScript
 
     [<Website>]
     let Main =
@@ -26,7 +27,13 @@ module Site =
                 let a = "hello"
                 Content.Page([
                     client (div [] [text a])
-                    br [] []
-                    Doc.WebControl <| MyControl()
+                    br [
+                        // ERROR: This won't print anything
+                        on.afterRender (fun e -> Console.Log $"br OAR={e}")
+                    ] []
+                    div [
+                        // ERROR: uncommenting causes a runtime error
+                        //on.click (fun e args -> Console.Log $"div onclick={e}")
+                    ] [Doc.WebControl <| MyControl()]
                 ])
         )
