@@ -4,3 +4,4 @@
 bin/*
 obj/*
 wwwroot/Scripts/*
+/*.log
