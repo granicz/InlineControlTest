@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>${Title}</title>
-  </head>
-  <body>
-    <div ws-replace="Body"></div>
+</head>
+<body>
+    <div ws-replace="Body">
+        <div ws-template="MyComponent">
+            <input type="text" ws-var="Textbox" />
+            <button ws-onclick="OnClick">${Title}</button>
+        </div>
+    </div>
     <script ws-replace="scripts"></script>
-  </body>
+</body>
 </html>
