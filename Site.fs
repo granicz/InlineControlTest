@@ -1,9 +1,10 @@
 namespace MyApp01
 
 open WebSharper
+open WebSharper.JavaScript
 open WebSharper.Sitelets
-open WebSharper.UI.Server
 open WebSharper.UI.Html
+open WebSharper.UI.Server
 open WebSharper.UI.Templating
 
 type EndPoint =
@@ -14,22 +15,24 @@ type MyControl(a: string) =
 
     [<JavaScript>]
     override this.Body =
-        div [] [text $"{a} This is a web.control instance"]
+        div [
+            on.click (fun e arg -> Console.Log "web.control clicked")
+        ] [text $"{a} This is a web.control instance"]
 
-type Templates = Template<"wwwroot\\template.html", ClientLoad.Inline, ServerLoad.WhenChanged>
+// This is our main template, with inner templates for components
+type TemplateFile = Template< @"wwwroot\template.html", ClientLoad.FromDocument, ServerLoad.WhenChanged>
 
 module Site =
     open type WebSharper.UI.ClientServer
-    open WebSharper.JavaScript
 
     [<Website>]
     let Main =
         Application.MultiPage (fun ctx endpoint ->
             match endpoint with
+            // The home page uses our template, with ...
             | EndPoint.Home ->
                 let a = "hello"
-                // The master document is coming from a template, with ...
-                Templates()
+                TemplateFile()
                     .Title("Hello")
                     .Body([
                         // 1. Embedded client-side code
@@ -39,7 +42,7 @@ module Site =
                         // 3. An OAR handler
                         div [
                             on.afterRender (fun e -> Console.Log $"br OAR={e}")
-                        ] [text "3."]
+                        ] [text "3. div with OAR"]
                         // 4. A click event handler
                         div [
                             on.click (fun e args -> Console.Log $"div onclick={e}")
@@ -47,7 +50,7 @@ module Site =
                         // 5. A client-side control
                         Doc.WebControl <| MyControl("5.")
                         // 6. A template-driven "component" with event binding
-                        Templates.MyComponent()
+                        TemplateFile.MyComponent()
                             .Title("6. MyButton")
                             .OnClick(fun e -> Console.Log $"MyButton onclick => Textbox has \"{e.Vars.Textbox.Value}\"")
                             .Doc()
